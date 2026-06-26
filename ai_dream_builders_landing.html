@@ -800,7 +800,13 @@
           מתחילים מרעיון אחד ומתקדמים עד שיש משהו שאפשר לפתוח בדפדפן ולהגיד: את זה אני בניתי.
         </p>
         <br>
-        <a class="btn btn-secondary" href="mailto:hagayo@gmail.com?subject=אני רוצה לשמוע על מסלול מפתחי AI">דברו איתי על המסלול</a>
+        <!-- <a class="btn btn-secondary" href="mailto:hagayo@gmail.com?subject=אני רוצה לשמוע על מסלול מפתחי AI">דברו איתי על המסלול</a> -->
+        <form id="leadForm" style="display: flex; flex-direction: column; gap: 12px; max-width: 350px;">
+          <input type="text" id="leadName" placeholder="השם שלך" required style="padding: 12px; border-radius: 12px; border: none; font-size: 16px;">
+          <input type="tel" id="leadPhone" placeholder="מספר הווטסאפ שלך" required style="padding: 12px; border-radius: 12px; border: none; font-size: 16px;">
+          <button type="submit" class="btn btn-secondary" id="submitBtn">שילחו לי פרטים בווטסאפ 🚀</button>
+        </form>
+        <p id="formStatus" style="margin-top: 10px; font-weight: bold; display: none;"></p>
       </div>
       <div class="code-box" aria-label="קוד דוגמה דקורטיבי">
         <span class="code-line">const dream = "build something real";</span>
@@ -816,6 +822,7 @@
 
   <footer>
     © מסלול מפתחי AI - בניית חלומות עם קוד, יצירתיות ובינה מלאכותית
+    נכתב על ידי חגי און 2026
   </footer>
 
   <script>
@@ -872,6 +879,49 @@
     window.addEventListener('pointermove', (event) => {
       cursorLight.style.left = event.clientX + 'px';
       cursorLight.style.top = event.clientY + 'px';
+    });
+    
+    const leadForm = document.getElementById('leadForm');
+    const formStatus = document.getElementById('formStatus');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const MAKE_WEBHOOK_URL = 'https://hook.eu2.make.com/iujrrr39budgzllu85urn3863b3d9r4p';
+    // const MAKE_WEBHOOK_URL = 'https://hook.make.com/YOUR_WEBHOOK_ID';
+
+    leadForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      
+      const name = document.getElementById('leadName').value;
+      const phone = document.getElementById('leadPhone').value;
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'שולח... ✨';
+      
+      try {
+        const response = await fetch(MAKE_WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name: name, phone: phone })
+        });
+        
+        if (response.ok) {
+          formStatus.textContent = 'תודה! הפרטים נשלחו בהצלחה. ההודעה בדרך אליך.';
+          formStatus.style.color = '#8bd450';
+          formStatus.style.display = 'block';
+          leadForm.reset();
+        } else {
+          throw new Error('שגיאה בתגובת השרת');
+        }
+      } catch (error) {
+        formStatus.textContent = 'אופס! משהו השתבש. נסו שוב מאוחר יותר.';
+        formStatus.style.color = '#ff5d8f';
+        formStatus.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'שילחו לי פרטים בווטסאפ 🚀';
+      }
     });
   </script>
 </body>
